@@ -1,12 +1,33 @@
 # Daren-SNS Bridge
 
+## Disclaimer
+This project is about as bleeding edge alpha as you can get.  As of the time of this writing (Jan 25th 2025) I am running 
+it for about 8 hours in debug mode without any issues but I fully expect there will be some that will arise.  
+
 ## Overview
 The **Daren-SNS Bridge** is a Python-based application designed to mediate communication between a Daren master device 
-and multiple SNS slave devices using the dongles they are shipped with. It listens for commands from the Daren system, 
-queries designated SNS devices for rich telemetry data, extracts data and builds a valid Daren formatted dataframe from 
-the SNS response and returns that to the Daren master module. The bridge ensures seamless interoperability between the 
-two systems assuming that your modules are daisy chained and connected via BMS-CAN to a Victron Inverter. (Other inverters
-could work but this is not tested, yet)
+and multiple SNS slave devices using the serial/RS-485 dongles they are shipped with. It handles  both protocol translation 
+and baud rate conversion. 
+
+## How it works
+ - listens for commands from the Daren system
+ - queries designated SNS devices for rich telemetry data
+ - extracts data and builds a valid Daren formatted dataframe from the SNS response
+ - returns that response to the Daren master module. 
+
+The bridge ensures seamless interoperability between the two systems assuming that your modules are daisy chained and 
+connected via BMS-CAN to a Victron Inverter. (Other inverters could work but this is not tested, yet)
+
+# What are Daren / SNS battery modules ?
+These I have mainly seen sold by Aliexpress seller Papool, SuperBattery, possible Cernss, and maybe others but the BMS 
+types I am referring to are as follows:
+
+Daren is the DR-JC03 based BMS which was first seen in Papool batteries and can be 19200 or 9600 baud depending on version 
+and possibly firmware. It has ussually 2 RJ-45 ports on the front. 
+
+SNS refers to a newer type module shipping with three RJ-45 ports on the front (one is labeled CAN). The manufacturer 
+info mentions SNS, Cerns, and Ho01.  This module by default, communicates at 9600 baud and and shares a common RS-485 
+pinout now with the Daren DR-JCXX BMS types so the same USB serial adapter can be used for both types.  
 
 ## Features
 - Listens for commands from the Daren master.
@@ -59,12 +80,6 @@ SNS_ADDRESSES = [b'\x08']    # SNS slave addresses
 ├── parse.py
 └── utils.py
 ```
-
-## How It Works
-1. **Listening**: The bridge listens on the Daren master port for incoming commands addresses to your sns slave.
-2. **Routing**: It identifies valid master requests and a query to the appropriate SNS slave based on the configured address(es).
-3. **Transformation**: Responses from SNS slaves are processed, transformed, and sent back to the Daren master in the required format.
-4. **Error Handling**: The system retries failed SNS communications and logs errors for debugging.
 
 ## Logging
 The application provides detailed logs for troubleshooting. Adjust the logging configuration in `utils/logger.py` for verbosity levels (e.g., `DEBUG`, `INFO`, `ERROR`).
