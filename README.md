@@ -11,7 +11,7 @@ and baud rate conversion.
 
 ## How it works
  - listens for commands from the Daren system
- - queries designated SNS devices for rich telemetry data
+ - queries designated SNS devices for rich telemetry data (uses Service 42 from the Basen spec when querying the SNS module)
  - extracts data and builds a valid Daren formatted dataframe from the SNS response
  - returns that response to the Daren master module. 
 
@@ -94,9 +94,15 @@ The application provides detailed logs for troubleshooting. Adjust the logging c
 Contributions are welcome! Please submit issues or pull requests for bug fixes or feature requests.
 
 ## Credits
-Many thanks to the maintainer and authors of https://github.com/mr-manuel/venus-os_dbus-serialbattery 
+Many thanks to the maintainer and authors of https://github.com/mr-manuel/venus-os_dbus-serialbattery and 
+https://github.com/cpttinkering/daren-485
 Without their work, this would have taken me so much more time.  Some modules and bits of pieces from that project are 
 still reused in this one until refactored. 
+
+## References
+- dbus-serialbattery project above
+- https://github.com/cpttinkering/daren-485
+- see documentation replicated in this repo for posterity and backup in the ```docs/``` directory
 
 ## License
 This project is licensed under the MIT License. See the `LICENSE` file for details.
