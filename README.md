@@ -1,6 +1,6 @@
 # Daren-SNS Bridge
 
-## Disclaimer
+### Disclaimer
 This project is about as bleeding edge alpha as you can get.  As of the time of this writing (Jan 25th 2025) I am running 
 it for about 8 hours in debug mode without any issues but I fully expect there will be some that will arise.  
 
@@ -18,7 +18,7 @@ and baud rate conversion.
 The bridge ensures seamless interoperability between the two systems assuming that your modules are daisy chained and 
 connected via BMS-CAN to a Victron Inverter. (Other inverters could work but this is not tested, yet)
 
-# What are Daren / SNS battery modules ?
+## What are Daren / SNS battery modules ?
 These I have mainly seen sold by Aliexpress seller Papool, SuperBattery, possible Cernss, and maybe others but the BMS 
 types I am referring to are as follows:
 
