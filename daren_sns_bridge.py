@@ -190,7 +190,7 @@ class DarenSNSBridge:
             # Convert the updated payload list back to a string
             daren_payload_str = "".join(daren_payload_list)
 
-            logger.debug(f"{ho_payload_str}")
+            logger.info(f"{ho_payload_str}")
             logger.debug(f"{daren_payload_str}")
             logger.debug(f"Ho -> Daren translation complete. Chopping addr and data flag...")
             daren_payload_str = daren_payload_str[4:152]
@@ -215,7 +215,6 @@ class DarenSNSBridge:
             final_frame = partial_frame + frame_cs_hex + b"\r"
 
             # Log and return the final frame
-            logger.info(f"{sns_response}")
             daren_parse_and_print_payload(final_frame.decode("ascii"))
             return final_frame
 
