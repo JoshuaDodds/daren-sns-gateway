@@ -1,5 +1,4 @@
-from daren_sns_bridge import DarenSNSBridge
-from struct import unpack
+# from daren_sns_bridge import DarenSNSBridge
 
 # sample messages
 ho = '>22084200E0C6001BD314EB100D130D130D130D130D130D130D130D140D140D140D130D140D130D130D130D1300820075006404007800780078006E009D000000640127101BD30008000000010000000000230000000000000000000000000000000000000000000000D5AF\r'
@@ -55,6 +54,7 @@ def parse_and_print_payload(message):
     starting_offset = 0
 
     for field_name, size_or_offsets in field_sizes.items():
+        print(offset)
         if field_name == "Cell Voltages":
             # Parse individual cell voltages
             cell_voltages = ""
@@ -122,13 +122,14 @@ def daren_parse_and_print_payload(daren_response):
     # Extract the payload
     full_len = len(daren_response)
     daren_payload_str = daren_response[13:full_len - 5]  # Skip the first 13 bytes and last 5 bytes
-    print(f"length: {len(daren_payload_str)}")
+    # print(f"length: {len(daren_payload_str)}")
 
     # Define field sizes and offsets based on Daren's structure
     field_sizes = {
         "Pack Voltage": (6, 10),
-        "SOC / Remaining": (18, 22),
-        "SOH / Installed": (22, 26),
+        "SOH": (14, 18),
+        "SOC": (18, 22),
+        "Installed": (22, 26),
         "Full Charge Capacity": (26, 30),
         "Cell Voltages": [(34 + i * 4, 34 + i * 4 + 4) for i in range(16)],  # 16 cell voltages starting at offset 34
         "MOS Temp": (98, 102),

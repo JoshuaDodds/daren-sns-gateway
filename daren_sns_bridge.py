@@ -3,6 +3,7 @@ from time import sleep
 
 from utils import open_serial_port, logger
 from bms.sns01_485 import Daren485v2
+from parse import daren_parse_and_print_payload
 
 
 class DarenSNSBridge:
@@ -22,11 +23,14 @@ class DarenSNSBridge:
                     logger.error(f"Failed to open Daren master port {self.daren_port}.")
                     return
 
+                # Flush input buffer before starting
+                daren_ser.reset_input_buffer()
+
                 logger.info(f"Listening to Daren master on {self.daren_port} @ {self.daren_baud}...")
                 while self.running:
                     message = self.read_from_serial(daren_ser)
                     if message:
-                        logger.info(message)
+                        logger.debug(message)
                         self.handle_message(message)
         except Exception:
             logger.error(f"Error opening or listening to Daren master port. {self.daren_port}. Make sure ports are configured correctly.")
@@ -121,8 +125,7 @@ class DarenSNSBridge:
                     sleep(0.2)
                     continue
 
-                # If it looks okay, return the raw bytes or the ASCII string (up to you).
-                # Many transform functions want bytes, so let's revert back to bytes:
+                # If it looks okay, return the raw bytes
                 logger.debug(f"Valid SNS ASCII response: {response_str}")
                 return response_bytes
 
@@ -138,6 +141,8 @@ class DarenSNSBridge:
         if not sns_response:
             logger.error("Cannot transform an empty response.")
             return None
+
+        logger.info(sns_response)
 
         try:
             # 1) Parse the payload from the Ho raw message (skip first 13 bytes of header and last 5 bytes for CRC+\r).
@@ -171,9 +176,10 @@ class DarenSNSBridge:
             # Define mappings for static fields
             # Daren target offsets on the left and Ho01 offsets to retrieve from on the right
             static_mappings = {
+                (14, 18): (114, 118),  # SOH
                 (18, 22): (124, 128),  # Remaining Capacity / SOC
-                (22, 26): (120, 124),  # Installed Capacity / SOH
-                (26, 30): (120, 124),  # Installed Capacity / SOH
+                (22, 26): (120, 124),  # Installed Cap / Available Cap
+                (26, 30): (120, 124),  # Installed Capacity / Available Cap
                 (98, 102): (84, 88),  # MOS Temp
                 (102, 118): (90, 106),  # Cell Temps
             }
@@ -188,6 +194,9 @@ class DarenSNSBridge:
             logger.debug(f"{daren_payload_str}")
             logger.debug(f"Ho -> Daren translation complete. Chopping addr and data flag...")
             daren_payload_str = daren_payload_str[4:152]
+
+            # repalce last 19 bytes with hardcoded alarm data and running state (currently do not know how to map this yet)
+            daren_payload_str = daren_payload_str[:-29] + '00000000001000000000003000000'
 
             # Encode the payload to ASCII bytes
             daren_payload = daren_payload_str.encode("ascii")
@@ -206,7 +215,7 @@ class DarenSNSBridge:
             final_frame = partial_frame + frame_cs_hex + b"\r"
 
             # Log and return the final frame
-            logger.debug(f"Transformed Ho->Daren frame (size: {len(final_frame)}): {final_frame}")
+            daren_parse_and_print_payload(final_frame.decode("ascii"))
             return final_frame
 
         except Exception as e:
@@ -260,7 +269,7 @@ class DarenSNSBridge:
                 return
             self.write_to_serial(daren_ser, response)
             logger.info(f"Response sent to Daren master for slave 8")
-            logger.info(f"{response}")
+            logger.info(f"{response}\n")
 
     @staticmethod
     def read_from_serial(ser):
@@ -306,8 +315,8 @@ class DarenSNSBridge:
 
 if __name__ == "__main__":
     # Configuration
-    DAREN_PORT = "/dev/ttyUSB1"
-    SNS_PORT = "/dev/ttyUSB0"
+    DAREN_PORT = "/dev/ttyUSB0"
+    SNS_PORT = "/dev/ttyUSB1"
     DAREN_BAUD = 19200
     SNS_BAUD = 9600
     SNS_ADDRESSES = [b'\x08']  # List of SNS slave addresses to handle
