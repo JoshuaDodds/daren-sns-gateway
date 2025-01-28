@@ -122,7 +122,7 @@ def daren_parse_and_print_payload(daren_response):
     # Extract the payload
     full_len = len(daren_response)
     daren_payload_str = daren_response[13:full_len - 5]  # Skip the first 13 bytes and last 5 bytes
-    print(f"length: {len(daren_payload_str)}")
+    # print(f"length: {len(daren_payload_str)}")
 
     # Define field sizes and offsets based on Daren's structure
     field_sizes = {

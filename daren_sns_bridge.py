@@ -269,7 +269,7 @@ class DarenSNSBridge:
                 return
             self.write_to_serial(daren_ser, response)
             logger.info(f"Response sent to Daren master for slave 8")
-            logger.info(f"{response}")
+            logger.info(f"{response}\n")
 
     @staticmethod
     def read_from_serial(ser):
