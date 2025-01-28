@@ -215,7 +215,7 @@ class DarenSNSBridge:
             final_frame = partial_frame + frame_cs_hex + b"\r"
 
             # Log and return the final frame
-            logger.debug(f"{final_frame}")
+            logger.info(f"{sns_response}")
             daren_parse_and_print_payload(final_frame.decode("ascii"))
             return final_frame
 
