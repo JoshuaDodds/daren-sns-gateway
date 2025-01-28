@@ -142,7 +142,7 @@ class DarenSNSBridge:
             logger.error("Cannot transform an empty response.")
             return None
 
-        logger.debug(sns_response)
+        logger.info(sns_response)
 
         try:
             # 1) Parse the payload from the Ho raw message (skip first 13 bytes of header and last 5 bytes for CRC+\r).
@@ -190,7 +190,7 @@ class DarenSNSBridge:
             # Convert the updated payload list back to a string
             daren_payload_str = "".join(daren_payload_list)
 
-            logger.info(f"{ho_payload_str}")
+            logger.debug(f"{ho_payload_str}")
             logger.debug(f"{daren_payload_str}")
             logger.debug(f"Ho -> Daren translation complete. Chopping addr and data flag...")
             daren_payload_str = daren_payload_str[4:152]
