@@ -176,7 +176,7 @@ class DarenSNSBridge:
             # Define mappings for static fields
             # Daren target offsets on the left and Ho01 offsets to retrieve from on the right
             static_mappings = {
-                # (16, 18): (?, ?),  # SOH 1 Byte
+                (14, 18): (114, 118),  # SOH
                 (18, 22): (124, 128),  # Remaining Capacity / SOC
                 (22, 26): (120, 124),  # Installed Cap / Available Cap
                 (26, 30): (120, 124),  # Installed Capacity / Available Cap
@@ -215,7 +215,7 @@ class DarenSNSBridge:
             final_frame = partial_frame + frame_cs_hex + b"\r"
 
             # Log and return the final frame
-            logger.debug(f"Transformed Ho->Daren frame (size: {len(final_frame)}): {final_frame}")
+            logger.debug(f"{final_frame}")
             daren_parse_and_print_payload(final_frame.decode("ascii"))
             return final_frame
 
