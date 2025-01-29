@@ -3,7 +3,7 @@ import time
 import threading
 
 # Configuration
-MASTER_SLAVE_PORT = "/dev/ttyUSB1"  # JC03 master-slave communication
+MASTER_SLAVE_PORT = "/dev/ttyUSB0"  # JC03 master-slave communication
 HO01_PORT = "/dev/ttyUSB1"         # Ho01 communication
 BAUD_MASTER_SLAVE = 19200
 BAUD_HO01 = 9600
