@@ -31,7 +31,11 @@ degree sign (`°`)
 
 
 # LOGGING
-logging.basicConfig()
+logging.basicConfig(
+    format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
+    datefmt="%Y-%m-%d %H:%M:%S",
+)
+
 logger = logging.getLogger("DarenSnsBridge")
 
 PATH_CONFIG_DEFAULT: str = "config.default.ini"
@@ -591,7 +595,7 @@ def open_serial_port(port: str, baud: int) -> Union[serial.Serial, None]:
     tries = 3
     while tries > 0:
         try:
-            return serial.Serial(port, baudrate=baud, timeout=0.1)
+            return serial.Serial(port, baudrate=baud, timeout=0.1, rtscts=False)
         except serial.SerialException as e:
             logger.error(e)
             tries -= 1
