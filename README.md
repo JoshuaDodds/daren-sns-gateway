@@ -1,8 +1,8 @@
 # Daren-SNS Bridge
 
 ### Disclaimer
-This project is about as bleeding edge alpha as you can get.  As of the time of this writing (Jan 25th 2025) I am running 
-it for about 8 hours in debug mode without any issues but I fully expect there will be some that will arise.  
+This project is about as bleeding edge alpha as you can get.  
+Update: As of the time of this writing (Jan 31 2025), this has been running for several days without any issue.  
 
 ## Overview
 The **Daren-SNS Bridge** is a Python-based application designed to mediate communication between a Daren master device 

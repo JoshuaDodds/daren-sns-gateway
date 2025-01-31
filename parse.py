@@ -134,7 +134,6 @@ def daren_parse_and_print_payload(daren_response):
         "Cell Voltages": [(34 + i * 4, 34 + i * 4 + 4) for i in range(16)],  # 16 cell voltages starting at offset 34
         "MOS Temp": (98, 102),
         "Cell Temps": [(102 + i * 4, 102 + i * 4 + 4) for i in range(4)],  # 4 temperatures starting at offset 102
-        # todo:  "Pack Current": (132, 136),
     }
 
     # Parse and format fields
