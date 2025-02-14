@@ -86,7 +86,8 @@ class DarenSNSBridge:
         logger.debug(f"Querying SNS slave at address {sns_addr}...")
 
         sns_slave = Daren485v2(self.sns_port, self.sns_baud, sns_addr)
-        command = '>220842420000FDA8\r'  # Example command
+        # command = '>22088484E00208FD1D\r' # SNS Sniffed command from a SNS Master (for some reason ignored by slave)
+        command = '>220842420000FDA8\r'  # SNS service 42 command (working)
         logger.debug(f"Constructed SNS command: {command}")
 
         with open_serial_port(sns_slave.port, sns_slave.baud_rate) as sns_ser:

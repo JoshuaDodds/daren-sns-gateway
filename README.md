@@ -1,7 +1,11 @@
 # Daren-SNS Bridge
 
 ### Disclaimer
-This project is about as bleeding edge alpha as you can get.  
+This project is about as bleeding edge alpha as you can get. It's important to understand that this integration 
+reports only basic metrics from the non-Daren battery module but not error statuses charging/discharging machine status.
+This means that if this one module has any kind of internal failure its own BMS will protect bad behaviour but this failure 
+will not be reported to the master battery and therefore the connected Victron system will be unaware of the single module 
+failt state as well.
 Update: As of the time of this writing (Jan 31 2025), this has been running for several days without any issue.  
 
 ## Overview

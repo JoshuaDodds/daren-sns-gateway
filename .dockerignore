@@ -1,0 +1,6 @@
+**/.env
+.gitignore
+*.Dockerfile
+README.md
+**/cache.json
+**/homeconnect_oauth_token.json
