@@ -1,3 +1,4 @@
+import sys
 import threading
 from time import sleep
 
@@ -86,7 +87,7 @@ class DarenSNSBridge:
         logger.debug(f"Querying SNS slave at address {sns_addr}...")
 
         sns_slave = Daren485v2(self.sns_port, self.sns_baud, sns_addr)
-        # command = '>22088484E00208FD1D\r' # SNS Sniffed command from a SNS Master (for some reason ignored by slave)
+        # command = '>22088484E00208FD1D\r' # SNS Sniffed command from an SNS Master (for some reason ignored by slave)
         command = '>220842420000FDA8\r'  # SNS service 42 command (working)
         logger.debug(f"Constructed SNS command: {command}")
 
@@ -327,3 +328,7 @@ if __name__ == "__main__":
         bridge.start()
     except KeyboardInterrupt:
         bridge.stop()
+        sys.exit(0)
+    except Exception as e:
+        print(f"Unhandled error: {e}. Exiting...")
+        sys.exit(1)
