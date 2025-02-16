@@ -444,7 +444,7 @@ class Daren485v2(Battery):
         ser.write(req.encode())
         logger.debug("get_manufacturer_info request sent: {}".format(req))
 
-        sleep(0.4)  # Allow the BMS some time to send a full response
+        sleep(1.5)  # Allow the BMS some time to send a full response
 
         response = self.read_response(ser)
 
@@ -492,7 +492,7 @@ class Daren485v2(Battery):
         ser.write(req.encode())
         logger.debug("get_cells_params request sent: {}".format(req))
 
-        sleep(0.4)  # Allow the BMS some time to send a full response
+        sleep(1.5)  # Allow the BMS some time to send a full response
 
         response = self.read_response(ser)
 
