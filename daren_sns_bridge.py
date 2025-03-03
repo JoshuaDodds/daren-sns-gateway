@@ -290,7 +290,7 @@ class DarenSNSBridge:
             return buffer if buffer else None
         except Exception as e:
             logger.error(f"Error while reading from serial port: {e}")
-            return None
+            sys.exit(1)
 
     @staticmethod
     def write_to_serial(ser, message):
@@ -302,6 +302,7 @@ class DarenSNSBridge:
             logger.debug(f"Message sent to serial port: {message} (length: {len(message)})")
         except Exception as e:
             logger.error(f"Failed to write to serial port: {e}")
+            sys.exit(1)
 
     def start(self):
         """Start the bridge."""
