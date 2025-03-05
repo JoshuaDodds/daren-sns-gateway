@@ -1,4 +1,5 @@
 import sys
+import subprocess
 import threading
 from time import sleep
 
@@ -290,6 +291,7 @@ class DarenSNSBridge:
             return buffer if buffer else None
         except Exception as e:
             logger.error(f"Error while reading from serial port: {e}")
+            subprocess.run(["killall", "-9", "socat"], check=False)
             sys.exit(1)
 
     @staticmethod
@@ -302,6 +304,7 @@ class DarenSNSBridge:
             logger.debug(f"Message sent to serial port: {message} (length: {len(message)})")
         except Exception as e:
             logger.error(f"Failed to write to serial port: {e}")
+            subprocess.run(["killall", "-9", "socat"], check=False)
             sys.exit(1)
 
     def start(self):
@@ -332,4 +335,5 @@ if __name__ == "__main__":
         sys.exit(0)
     except Exception as e:
         print(f"Unhandled error: {e}. Exiting...")
+        subprocess.run(["killall", "-9", "socat"], check=False)
         sys.exit(1)
