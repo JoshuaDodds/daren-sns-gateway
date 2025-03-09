@@ -1,7 +1,8 @@
 import sys
 import subprocess
 import threading
-from time import sleep
+from time import sleep, time
+import serial
 
 from utils import open_serial_port, logger
 from bms.sns01_485 import Daren485v2
@@ -21,22 +22,37 @@ class DarenSNSBridge:
         """Listen for messages on the Daren master port."""
         try:
             with open_serial_port(self.daren_port, self.daren_baud) as daren_ser:
-                if not daren_ser.is_open:
+                if not daren_ser or not daren_ser.is_open:
                     logger.error(f"Failed to open Daren master port {self.daren_port}.")
                     return
 
-                # Flush input buffer before starting
                 daren_ser.reset_input_buffer()
-
                 logger.info(f"Listening to Daren master on {self.daren_port} @ {self.daren_baud}...")
+
+                last_received_time = time()  # Track last received message time
+                timeout_threshold = 10  # Number of seconds to wait before assuming failure
+
                 while self.running:
                     message = self.read_from_serial(daren_ser)
+
                     if message:
-                        logger.debug(message)
+                        logger.debug(f"Received: {message}")
+                        last_received_time = time()  # Reset timeout tracking
                         self.handle_message(message)
-        except Exception:
-            logger.error(f"Error opening or listening to Daren master port. {self.daren_port}. Make sure ports are configured correctly.")
-            return
+
+                    elif time() - last_received_time > timeout_threshold:
+                        logger.info(f"No messages received for {timeout_threshold} seconds. Assuming connection lost.")
+                        break  # Exit the loop to allow recovery
+
+                    # Check if the port is still open (helps detect cable or network disconnects.)
+                    if not daren_ser.is_open:
+                        logger.error("Daren master port unexpectedly closed - most likely a physical or network connection issue.")
+                        break
+
+        except (serial.SerialException, IOError) as e:
+            logger.error(f"Serial port error: {e}. Check connections.")
+        except Exception as e:
+            logger.error(f"Unexpected error in listen_to_daren: {e}")
 
     def handle_message(self, message):
         """Determine if a message is a master request or a slave reply."""
@@ -97,7 +113,7 @@ class DarenSNSBridge:
                 logger.error(f"Failed to open SNS slave port {self.sns_port}.")
                 return None
 
-            max_attempts = 3
+            max_attempts = 1
             for attempt in range(max_attempts):
                 logger.debug(f"Sending command to SNS slave (Attempt {attempt + 1})...")
                 self.write_to_serial(sns_ser, command.encode())
