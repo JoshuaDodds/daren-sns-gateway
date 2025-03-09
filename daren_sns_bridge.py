@@ -42,12 +42,14 @@ class DarenSNSBridge:
 
                     elif time() - last_received_time > timeout_threshold:
                         logger.info(f"No messages received for {timeout_threshold} seconds. Assuming connection lost.")
-                        break  # Exit the loop to allow recovery
+                        subprocess.run(["killall", "-9", "socat"], check=False)
+                        sys.exit(1)
 
                     # Check if the port is still open (helps detect cable or network disconnects.)
                     if not daren_ser.is_open:
                         logger.error("Daren master port unexpectedly closed - most likely a physical or network connection issue.")
-                        break
+                        subprocess.run(["killall", "-9", "socat"], check=False)
+                        sys.exit(1)
 
         except (serial.SerialException, IOError) as e:
             logger.error(f"Serial port error: {e}. Check connections.")
@@ -149,7 +151,7 @@ class DarenSNSBridge:
                 return response_bytes
 
             # If we get here, all attempts failed.
-            logger.error("Failed to communicate with SNS slave after 3 attempts.")
+            logger.error(f"Failed to communicate with SNS slave after {attempt} attempts.")
             return None
 
     def transform_response(self, sns_response):
